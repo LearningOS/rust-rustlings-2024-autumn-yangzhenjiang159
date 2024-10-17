@@ -11,7 +11,7 @@
 // Execute `rustlings hint iterators5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+
 
 use std::collections::HashMap;
 
@@ -19,9 +19,10 @@ use std::collections::HashMap;
 enum Progress {
     None,
     Some,
-    Complete,
+    Complete, //完成
 }
 
+//查询进度相同的key个数
 fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
     let mut count = 0;
     for val in map.values() {
@@ -35,7 +36,8 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    map.values().filter(|&&val| val == value).count() //|&&val| val == value 是通过模式解构来自动解引用
+    // map.values().filter(|val| *val == &value).count()  //|val| *val == value 是手动解引用
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -54,7 +56,10 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    collection.iter()
+        .flat_map(|map| map.values())
+        .filter(|&&val| val == value)
+        .count()
 }
 
 #[cfg(test)]

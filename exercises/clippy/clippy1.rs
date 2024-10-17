@@ -8,13 +8,14 @@
 //
 // Execute `rustlings hint clippy1` or use the `hint` watch subcommand for a
 // hint.
+// Clippy 的 approx_constant lint 是为了避免使用不精确的数学常量。在这种情况下，使用 f32::consts::PI 可以确保 π 的精确值（相对于 f32 类型的精度）。
+// #[allow(clippy::approx_constant)]   关闭 Clippy
 
-// I AM NOT DONE
 
 use std::f32;
 
 fn main() {
-    let pi = 3.14f32;
+    let pi = f32::consts::PI;
     let radius = 5.00f32;
 
     let area = pi * f32::powi(radius, 2);

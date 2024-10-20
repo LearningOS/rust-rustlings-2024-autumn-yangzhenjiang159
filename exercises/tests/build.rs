@@ -9,4 +9,7 @@ fn main() {
 
     // 设置环境变量 TEST_FOO 为当前时间戳
     println!("cargo:rustc-env=TEST_FOO={}", timestamp);
+
+    println!("cargo:rustc-cfg=feature=\"pass\"");
+
 }

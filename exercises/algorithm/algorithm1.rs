@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -15,7 +15,7 @@ struct Node<T> {
 }
 
 impl<T> Node<T> {
-    fn new(t: T) -> Node<T> {
+     fn new(t: T) -> Node<T> {
         Node {
             val: t,
             next: None,
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Ord + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Ord + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -47,7 +47,7 @@ impl<T> LinkedList<T> {
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
         node.next = None;
-        let node_ptr = Some(unsafe { NonNull::new_unchecked(Box::into_raw(node)) });
+        let node_ptr = Some(unsafe { NonNull::new_unchecked(Box::into_raw(node)) }); //当前节点指针
         match self.end {
             None => self.start = node_ptr,
             Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = node_ptr },
@@ -69,14 +69,43 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merged_list = LinkedList::new();
+
+        // Merge until one of the lists is empty
+        while list_a.length > 0 && list_b.length > 0 {
+            let a_val = unsafe { (*list_a.start.unwrap().as_ptr()).val.clone() };
+            let b_val = unsafe { (*list_b.start.unwrap().as_ptr()).val.clone() };
+
+            if a_val <= b_val {
+                merged_list.add(a_val);
+                list_a.start = unsafe { (*list_a.start.unwrap().as_ptr()).next };
+                list_a.length -= 1;
+            } else {
+                merged_list.add(b_val);
+                list_b.start = unsafe { (*list_b.start.unwrap().as_ptr()).next };
+                list_b.length -= 1;
+            }
         }
+
+        // Add remaining elements from list_a
+        while list_a.length > 0 {
+            let a_val = unsafe { (*list_a.start.unwrap().as_ptr()).val.clone() };
+            merged_list.add(a_val);
+            list_a.start = unsafe { (*list_a.start.unwrap().as_ptr()).next };
+            list_a.length -= 1;
+        }
+
+        // Add remaining elements from list_b
+        while list_b.length > 0 {
+            let b_val = unsafe { (*list_b.start.unwrap().as_ptr()).val.clone() };
+            merged_list.add(b_val);
+            list_b.start = unsafe { (*list_b.start.unwrap().as_ptr()).next };
+            list_b.length -= 1;
+        }
+
+        merged_list
 	}
 }
 
